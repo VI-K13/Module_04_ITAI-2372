@@ -1,6 +1,0 @@
-pandas
-matplotlib
-transformers
-torch
-accelerate
-gradio
