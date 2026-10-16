@@ -44,10 +44,11 @@ The notebook selects a **stratified, reproducible sample of 300 statements** (`r
 ```text
 Module_04_ITAI-2372/
 ├── Finance_News_AI_Analyzer_Viktoriya_Kurmisheva.ipynb
-├── all-data.csv
 ├── README.md
 ├── requirements.txt
 ├── .gitignore
+├── Dataset/
+│   └── all-data.csv
 └── screenshots/
     ├── tech_stocks_sentiment.png
     ├── tech_stocks_ai_insights.png
