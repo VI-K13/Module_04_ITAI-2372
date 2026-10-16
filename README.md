@@ -1,94 +1,133 @@
 # Finance News AI Analyzer
 
-A beginner-friendly financial news analysis prototype built in **Google Colab** using two pretrained language models: **FinBERT** for sentiment classification and **Qwen2.5-1.5B-Instruct** for article summaries, risk/opportunity analysis, and question answering. The interactive interface is built with **Gradio**.
+A finance-focused AI prototype developed in **Google Colab** with Python and **Gradio**. It combines traditional rule-based sentiment analysis (**VADER**), a pretrained financial sentiment model (**FinBERT**), and a small generative language model (**Qwen2.5-1.5B-Instruct**) for financial news summaries, risk and opportunity analysis, and question answering.
 
-This is an educational proof of concept, **not** an investment advisory or stock prediction tool.
+This project is for **educational purposes only**. It does not provide investment advice or predict stock prices.
 
 ## Features
 
-- Select one of six fictional financial news examples or paste your own article.
-- View positive, negative, or neutral sentiment and model confidence scores from FinBERT.
-- Get a short, AI-generated article summary from Qwen.
-- Ask Qwen to identify financial risks and opportunities discussed in the article.
-- Ask your own questions about the article in natural language.
+- Select one of **six fictional example articles**, choose from **12 Kaggle financial statements**, or paste your own financial text.
+- Analyze sentiment with **FinBERT**, including positive, negative, and neutral scores and a predicted label.
+- Compare **VADER** (traditional rule-based NLP) with **FinBERT** using labeled financial data.
+- Generate short article summaries and potential risks/opportunities with **Qwen**.
+- Ask questions about an article and receive AI-generated answers grounded in its text.
+- Evaluate sentiment predictions against reference labels using **accuracy, precision, recall, and F1-score**.
 
-The program does **not** use manually written financial sentiment keyword rules or predefined answers. The pretrained models produce the predictions and responses. Basic input checks and text cleaning are performed in Python.
+The project does **not** contain manually written keyword rules for sentiment or predefined financial answers. VADER uses its existing sentiment lexicon and rules; FinBERT and Qwen use pretrained models. Python handles basic input validation and preprocessing.
 
 ## Models and tools
 
 | Component | Tool | Purpose |
 | --- | --- | --- |
-| Financial sentiment | `ProsusAI/finbert` | Pretrained positive/negative/neutral classifier |
-| Text generation | `Qwen/Qwen2.5-1.5B-Instruct` | Pretrained small language model (SLM) |
-| Interface | Gradio | Article input and AI output panels |
-| Data processing | Pandas, Python regular expressions | Sample data, cleaning, basic tokenization |
-| Visualization | Matplotlib | Sentiment distribution chart |
-| Execution | Google Colab + PyTorch + Hugging Face Transformers | Run the notebook and models |
+| Traditional sentiment analysis | `vaderSentiment` | Rule-based positive, negative, neutral, and compound sentiment scores |
+| Financial sentiment model | `ProsusAI/finbert` | Predicts positive, negative, or neutral sentiment with confidence scores |
+| Generative language model | `Qwen/Qwen2.5-1.5B-Instruct` | Generates summaries, financial insights, and answers |
+| Interface | Gradio | Interactive article selection, text input, and output panels |
+| Data handling and preprocessing | Pandas, regular expressions | Organizes text, removes unnecessary characters, tokenizes, and checks data quality |
+| Evaluation | scikit-learn | Accuracy, precision, recall, F1-score, and classification reports |
+| Visualization | Matplotlib | Sentiment charts and model comparison |
+| Environment | Google Colab, PyTorch, Hugging Face Transformers | Runs pretrained models and the notebook |
 
-No paid API or API key is needed to run the pretrained models. A network connection is needed initially to install packages and download model files.
+No paid model API or API key is required. Internet access is needed for initial package installation and pretrained model downloads.
+
+## Data
+
+This project uses two sets of text:
+
+1. **Six fictional finance examples**, created for testing longer summaries and natural-language Q&A. These are demonstrations, not genuine market news.
+2. **FinancialPhraseBank**, distributed on Kaggle as `all-data.csv` in the *Sentiment Analysis for Financial News* dataset. The uploaded file contains **4,846 labeled financial statements**. After removing empty rows and exact duplicate texts, the notebook reports **4,838 usable statements**: **2,872 neutral**, **1,362 positive**, and **604 negative**.
+
+The notebook selects a **stratified, reproducible sample of 300 statements** (`random_state=42`) to compare VADER and FinBERT against the reference labels. It also includes the first 12 Kaggle statements in the Gradio sample dropdown. The dropdown's `Positive`, `Negative`, or `Neutral` suffix is the **dataset reference label**, not FinBERT's prediction.
 
 ## Project structure
 
 ```text
-Finance_News_AI_Analyzer_Project/
-├── Finance_News_AI_Analyzer_Viktoriya_Kurmisheva.ipynb   # Complete Python notebook and Gradio app
-├── README.md                                             # Project overview and instructions
-├── requirements.txt                                      # Python dependencies
-├── .gitignore                                            # Excludes temporary outputs/credentials
+Module_04_ITAI-2372/
+├── Finance_News_AI_Analyzer_Viktoriya_Kurmisheva.ipynb
+├── all-data.csv
+├── README.md
+├── requirements.txt
+├── .gitignore
 └── screenshots/
-    ├── retail_sentiment.png
-    ├── retail_ai_insights.png
     ├── tech_stocks_sentiment.png
-    └── tech_stocks_ai_insights.png
+    ├── tech_stocks_ai_insights.png
+    ├── kaggle_sentiment.png
+    ├── kaggle_ai_insights.png
+    ├── kaggle_dataset.png
+    ├── vader_finbert_comparison.png
+    └── model_evaluation.png
 ```
 
-**Why no `app.py` or HTML files?** The professor's Flask folder structure was an *example*. This implementation uses Gradio, so the interface, preprocessing, AI inference, and sample data are all in the `.ipynb` notebook. A separate Flask backend, `templates/`, and `static/` folders are not needed.
+The example Flask project layout in the assignment is a suggested structure, not a requirement. Here, preprocessing, sentiment analysis, evaluation, generative AI, and the Gradio interface are organized into commented code and Markdown cells in one Colab notebook; separate `app.py`, HTML, and CSS files are unnecessary.
 
 ## How to run in Google Colab
 
 1. Open [Google Colab](https://colab.research.google.com/) and upload `Finance_News_AI_Analyzer_Viktoriya_Kurmisheva.ipynb`.
-2. If available, select **Runtime → Change runtime type → T4 GPU** for faster Qwen inference. CPU may be considerably slower, and memory limits can affect execution.
-3. Select **Runtime → Run all**. Installation cells install the needed packages. The first run downloads FinBERT and Qwen from Hugging Face.
-4. Wait for the final Gradio launch cell. Open the Gradio interface inside Colab or through its temporary share link.
-5. Choose an article or paste financial text, click **Analyze Financial News**, and review the sentiment, summary, and risk/opportunity analysis.
-6. Enter a question in the final text box and click **Ask Qwen**.
+2. If available, choose **Runtime → Change runtime type → T4 GPU**. CPU inference can be significantly slower.
+3. Choose **Runtime → Run all**. The notebook installs required packages and downloads FinBERT and Qwen on its first run.
+4. When prompted, upload **`all-data.csv`**. The Kaggle dataset is required for the evaluation and Kaggle dropdown examples.
+5. Review the dataset cleaning outputs and VADER/FinBERT evaluation results.
+6. Open the Gradio interface displayed near the end of the notebook (or use the temporary shared link).
+7. Select a sample article or paste financial text, click **Analyze Financial News**, and review FinBERT's scores and Qwen's summary and risk analysis.
+8. Enter a question under **Ask Questions About the Article** and click **Ask Qwen**.
 
-The temporary Gradio share link is public to anyone who knows it, so avoid pasting confidential financial information. Colab sessions and share links are temporary. Model downloads and inference can take time.
+Colab sessions and temporary Gradio links are not permanent. A shared Gradio link can be opened by others who have the URL, so do not enter sensitive or confidential text.
 
-### Running outside Colab (optional)
+### Requirements
 
-Install packages using `pip install -r requirements.txt`. The supplied notebook uses Google Colab notebook commands and runs most easily there. Running locally requires a compatible Jupyter environment and enough memory for both models; the app is not packaged as an independent CLI or Flask server.
+The notebook includes installation cells. For an alternate compatible Jupyter environment, the main dependencies are listed in `requirements.txt` and can be installed with:
 
-## Example tests and screenshots
+```bash
+pip install -r requirements.txt
+```
 
-The six built-in articles are *fictional examples*, not real or live financial news.
+The notebook is designed primarily for Google Colab; it is not a separately packaged Flask or command-line application.
 
-| Test | Input | What to verify | Screenshot |
-| --- | --- | --- | --- |
-| Negative sentiment | Article 5 (Retail) | FinBERT returned **Negative** with **97.30%** confidence | `screenshots/retail_sentiment.png` |
-| Retail explanation & Q&A | Article 5; question: “What reduces customer's demand?” | Qwen linked reduced demand to higher product prices and identified falling sales as a risk | `screenshots/retail_ai_insights.png` |
-| Positive sentiment | Article 1 (Tech Stocks) | FinBERT returned **Positive** with **95.53%** confidence | `screenshots/tech_stocks_sentiment.png` |
-| Missing-information Q&A | Article 1; question: “Who is the CEO?” | Qwen replied that the article does not mention the CEO | `screenshots/tech_stocks_ai_insights.png` |
+## Evaluation results
 
-The screenshots document example outputs from the notebook. These tests do **not** establish model accuracy on a labeled benchmark. Qwen can still miss relevant implications or hallucinate unsupported facts. For example, it may overlook the positive business implications of strong earnings when identifying opportunities.
+Both sentiment methods were evaluated on the **same 300 labeled Kaggle financial statements**, using the dataset labels as the reference. The results obtained during the project test run were:
+
+| Model | Accuracy | Macro F1 | Weighted F1 |
+| --- | ---: | ---: | ---: |
+| VADER (rule-based) | 0.513 | 0.470 | 0.519 |
+| FinBERT (transformer) | 0.890 | 0.878 | 0.892 |
+
+FinBERT performed better than VADER on this sample. The comparison illustrates a difference between general-purpose lexicon-based sentiment and a model adapted for financial language. These scores describe **this evaluation sample**, not guaranteed accuracy on all financial news, and the evaluation is not a training or fine-tuning experiment.
+
+## Screenshots and functional tests
+
+| Screenshot | What it demonstrates |
+| --- | --- |
+| `screenshots/tech_stocks_sentiment.png` | Fictional tech earnings example; FinBERT predicted positive sentiment (95.53% confidence) |
+| `screenshots/tech_stocks_ai_insights.png` | Qwen article summary and answer about why investors reacted positively |
+| `screenshots/kaggle_sentiment.png` | Real labeled Kaggle financial statement; FinBERT predicted positive sentiment (94.82% confidence) |
+| `screenshots/kaggle_ai_insights.png` | Qwen summary, risk analysis, and Q&A for the Kaggle statement |
+| `screenshots/kaggle_dataset.png` | CSV loading, cleaning, usable row count, and label distribution |
+| `screenshots/vader_finbert_comparison.png` | Comparison chart for accuracy and macro F1 |
+| `screenshots/model_evaluation.png` | Classification reports and evaluation metrics for VADER and FinBERT |
 
 ## Business use case
 
-A financial news analyst or news aggregation team could use this prototype to skim short finance articles. FinBERT supplies an initial sentiment label, while Qwen helps summarize an article and answer focused questions. This could make early-stage review faster, but a human must check claims and assess the source before taking any financial action.
+A financial news analyst or aggregation platform could use this prototype to review short financial updates more efficiently. FinBERT offers an initial sentiment assessment, VADER provides a traditional NLP baseline for comparison, and Qwen summarizes statements and answers questions about their contents. These outputs could support early-stage research, but a human should verify figures, interpretation, and source credibility before making financial decisions.
 
-## Limitations
+## Limitations and lessons learned
 
-- No real-time financial news feed, verification, stock prediction, or trading recommendations.
-- The sample dataset includes only six fictional articles, it is not a labeled evaluation dataset.
-- Pretrained models may misclassify sentiment or generate inaccurate and unsupported explanations.
-- The smaller Qwen model is less reliable than larger models on some nuanced questions.
-- The application is a classroom prototype, not a secure production financial service.
+- The Qwen model can generate **unsupported claims or incorrect calculations**, even when its summaries sound convincing. In one Kaggle example, sales increased from **EUR 76 million to EUR 131 million**, but Qwen generated inconsistent percentage changes and suggested risks not established by the source. The calculated increase is approximately **72.4%**.
+- Qwen can overlook implications, such as treating strong earnings as positive developments without identifying any opportunities.
+- VADER is a general-purpose sentiment tool and can interpret financial language differently from FinBERT.
+- The Kaggle data contains mainly short statements rather than complete articles, and the evaluation uses a sample of 300, not the full dataset.
+- This prototype does not retrieve live news, verify financial claims, predict prices, or provide personalized financial recommendations.
+- The application is not designed as a secure production financial service.
 
-**Disclaimer:** This application is for educational and informational use only and does not provide financial or investment advice.
+These findings show why model outputs, especially numerical claims and financial risk assessments, require human review.
+
+**Disclaimer:** This application is for educational and informational use only and is not financial or investment advice.
 
 ## References
 
-- [FinBERT model — Hugging Face](https://huggingface.co/ProsusAI/finbert)
+- [FinancialPhraseBank dataset on Kaggle](https://www.kaggle.com/datasets/ankurzing/sentiment-analysis-for-financial-news)
+- [FinBERT — Hugging Face](https://huggingface.co/ProsusAI/finbert)
 - [Qwen2.5-1.5B-Instruct — Hugging Face](https://huggingface.co/Qwen/Qwen2.5-1.5B-Instruct)
+- [VADER Sentiment](https://github.com/cjhutto/vaderSentiment)
 - [Gradio documentation](https://www.gradio.app/docs)
 - [Google Colab](https://colab.research.google.com/)
