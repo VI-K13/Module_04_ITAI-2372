@@ -1,0 +1,10 @@
+__pycache__/
+.ipynb_checkpoints/
+*.pyc
+.env
+*.safetensors
+*.bin
+kaggle_sentiment_predictions.csv
+kaggle_model_comparison.csv
+financial_news_processed.csv
+financial_news_sentiment.csv
